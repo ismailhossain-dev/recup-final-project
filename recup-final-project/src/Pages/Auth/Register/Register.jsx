@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
+import { Link } from "react-router";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Register = () => {
   //React hook from work step-1
@@ -31,8 +33,8 @@ const Register = () => {
       <div className="card w-full max-w-sm shrink-0 shadow-2xl bg-base-100 border border-base-300">
         {/* ==The handleSubmit comes react-hook-from */}
         <form onSubmit={handleSubmit(handleRegistration)} className="card-body">
-          <h2 className="text-2xl font-bold text-center mb-4">Welcome Back!</h2>
-
+          <h2 className="text-2xl font-bold text-center mb-4">Welcome to Zap Shift!</h2>
+          <h1 className="text-2xl text-center -mt-3">Please Register</h1>
           {/* Email Field */}
           <div className="form-control">
             <label className="label">
@@ -96,12 +98,17 @@ const Register = () => {
             </button>
           </div>
 
-          {/* Footer Text */}
           <p className="text-center text-sm mt-4">
-            Don't have an account?
-            <a className="link link-primary ml-1 font-medium ">Sign Up</a>
+            Already have an account
+            <Link to="/login" className="link link-primary ml-1 font-semibold">
+              Login
+            </Link>
           </p>
         </form>
+        {/*  Login button*/}
+        <div className="flex justify-center pb-8">
+          <SocialLogin />
+        </div>
       </div>
     </div>
   );

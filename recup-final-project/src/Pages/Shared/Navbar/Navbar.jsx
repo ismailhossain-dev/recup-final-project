@@ -1,8 +1,22 @@
 import React from "react";
 import Logo from "../../../components/Logo/Logo";
 import { NavLink } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
+  const { user, logOut } = useAuth();
+
+  const handleLogOut = () => {
+    logOut()
+      .then((result) => {
+        console.log(result);
+        toast("Logout Successful");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   // একটি কমন ক্লাস ফাংশন যাতে একটিভ লিংক বুঝা যায়
   const navLinkStyles = ({ isActive }) =>
     `  mr-2 active:bg-transparent! hover:bg-transparent! p-0 ${isActive ? "border-b-2 border-blue-500  text-primary " : ""}`;
@@ -29,7 +43,6 @@ const Navbar = () => {
   );
 
   return (
-    // 'sticky' এবং 'backdrop-blur' ব্যবহার করা হয়েছে স্ক্রল করার সময় সুন্দর দেখানোর জন্য
     <div className="navbar bg-base-100/70 backdrop-blur-md sticky top-0 z-50 px-4 lg:px-12 shadow-sm">
       <div className="navbar-start">
         <div className="dropdown">
@@ -66,15 +79,26 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-end gap-2">
-        <NavLink to="/login" className="btn btn-ghost btn-sm md:btn-md capitalize">
-          Log In
-        </NavLink>
-        <NavLink
-          to="/get-started"
-          className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-white"
-        >
-          Get Started
-        </NavLink>
+        {user ? (
+          <button
+            onClick={handleLogOut}
+            className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-black"
+          >
+            LogOut
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-black"
+          >
+            Log in
+          </NavLink>
+        )}
+
+        {/* Be a Rider button  */}
+        <button className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-black mx-4">
+          Be a Rider
+        </button>
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Link } from "react-router";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Login = () => {
   const { signInUser } = useAuth();
@@ -28,7 +30,7 @@ const Login = () => {
       <div className="card w-full max-w-sm shadow-2xl bg-base-100">
         <form onSubmit={handleSubmit(handleSignInUser)} className="card-body">
           <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
-
+          <p className="text-center text-[18px] -mt-3 ">Please Login</p>
           {/* Email Input */}
           <div className="form-control">
             <label className="label">
@@ -79,9 +81,16 @@ const Login = () => {
           {/* Signup Link (Optional) */}
           <p className="text-center text-sm mt-4">
             Don't have an account?
-            <a className="link link-primary ml-1 font-semibold">Sign Up</a>
+            <Link to="/register" className="link link-primary ml-1 font-semibold">
+              SignUp
+            </Link>
           </p>
         </form>
+
+        {/* Social Login here */}
+        <div className="px-6 pb-6 mx-auto">
+          <SocialLogin />
+        </div>
       </div>
     </div>
   );
