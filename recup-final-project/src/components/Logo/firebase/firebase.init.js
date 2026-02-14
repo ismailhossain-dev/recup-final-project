@@ -4,12 +4,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.VIE_apiKey,
-  authDomain: import.meta.VIE_authDomain,
-  projectId: import.meta.VIE_projectId,
-  storageBucket: import.meta.VIE_storageBucket,
-  messagingSenderId: import.meta.VIE_messagingSenderId,
-  appId: import.meta.VIE_appId,
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: import.meta.env.VITE_authDomain,
+  projectId: import.meta.env.VITE_projectId,
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
 };
 
 // Initialize Firebase

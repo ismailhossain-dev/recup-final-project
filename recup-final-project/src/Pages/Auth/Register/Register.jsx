@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import useAuth from "../../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const Register = () => {
   //React hook from work step-1
@@ -9,9 +11,20 @@ const Register = () => {
     handleSubmit,
   } = useForm();
 
+  const { registerUser } = useAuth();
+
   //handle reach-hook-from
   const handleRegistration = (data) => {
     console.log(data);
+    //firebase signUp work
+    registerUser(data.email, data.password)
+      .then((result) => {
+        toast("SinUp Successful");
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
@@ -44,12 +57,12 @@ const Register = () => {
               <span className="label-text font-semibold">Password</span>
             </label>
             <input
-              type="password"
+              type="text"
               placeholder="••••••••"
               {...register("password", {
                 required: true,
                 minLength: 6,
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
               })}
               className="input input-bordered focus:input-primary transition-all  "
             />
@@ -64,7 +77,8 @@ const Register = () => {
             {/* regular exp use for password validation  & error message*/}
             {errors.password?.type === "pattern" && (
               <p className="text-red-500">
-                Password must contain uppercase, lowercase, number and special character
+                Password must have at least one uppercase, at least one lowercase, at least one
+                number, and at least one special characters
               </p>
             )}
 
