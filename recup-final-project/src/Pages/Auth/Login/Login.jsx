@@ -2,15 +2,21 @@ import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Login = () => {
-  const { signInUser } = useAuth();
+  const { signInUser, resetPassword } = useAuth();
+
+  //navigate move in once place to another place
+  const Navigate = useNavigate();
+  const location = useLocation();
+  // console.log("in the login page ", location);
+
   const {
     register,
     handleSubmit,
-    // watch,
+    getValues, // <-- getValues to read form values
     formState: { errors },
   } = useForm();
 
@@ -20,17 +26,41 @@ const Login = () => {
       .then((result) => {
         console.log(result);
         toast("SignIn Successful");
+        Navigate(location?.state || "/");
       })
       .catch((error) => {
         console.log(error);
+        toast(error.message); // show firebase errors
       });
   };
+
+  //Reset Password
+  const handleForgetPassword = () => {
+    const email = getValues("email"); // get email from input
+
+    if (!email) {
+      toast("Please enter your email first");
+      return;
+    }
+
+    resetPassword(email)
+      .then(() => {
+        console.log("password change successful");
+        toast("Password reset email sent");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast(error.message); // show firebase error
+      });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-base-200 p-4">
       <div className="card w-full max-w-sm shadow-2xl bg-base-100">
         <form onSubmit={handleSubmit(handleSignInUser)} className="card-body">
           <h2 className="text-2xl font-bold text-center mb-4">Welcome Back</h2>
           <p className="text-center text-[18px] -mt-3 ">Please Login</p>
+
           {/* Email Input */}
           <div className="form-control">
             <label className="label">
@@ -53,7 +83,7 @@ const Login = () => {
               <span className="label-text font-semibold">Password</span>
             </label>
             <input
-              type="text"
+              type="password"
               {...register("password", { required: true, minLength: 6 })}
               placeholder="••••••••"
               className="input input-bordered focus:input-primary"
@@ -66,8 +96,12 @@ const Login = () => {
             {errors.password?.type === "minLength" && (
               <p className="text-red-500">Password must be at least 6 characters.</p>
             )}
+
             <label className="label">
-              <a href="#" className="label-text-alt link link-hover text-primary">
+              <a
+                onClick={handleForgetPassword} // call forgot password
+                className="label-text-alt link link-hover text-primary cursor-pointer"
+              >
                 Forgot password?
               </a>
             </label>
@@ -81,7 +115,12 @@ const Login = () => {
           {/* Signup Link (Optional) */}
           <p className="text-center text-sm mt-4">
             Don't have an account?
-            <Link to="/register" className="link link-primary ml-1 font-semibold">
+            {/* sending state in register page */}
+            <Link
+              state={location.state}
+              to="/register"
+              className="link link-primary ml-1 font-semibold"
+            >
               SignUp
             </Link>
           </p>

@@ -4,9 +4,11 @@ import { AuthContext } from "../AuthContext/AuthContext";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../../components/Logo/firebase/firebase.init";
 import { GoogleAuthProvider } from "firebase/auth";
@@ -36,6 +38,15 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  //Sign in rest password
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+  //update profile most important
+  //the profile is coming resister page
+  const updateUserProfile = (profile) => {
+    return updateProfile(auth.currentUser, profile);
+  };
   //observe user state
   useEffect(() => {
     const unSubsCribe = onAuthStateChanged(auth, (currentUser) => {
@@ -56,6 +67,8 @@ const AuthProvider = ({ children }) => {
     loading,
     setLoading,
     logOut,
+    updateUserProfile,
+    resetPassword,
   };
 
   return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;

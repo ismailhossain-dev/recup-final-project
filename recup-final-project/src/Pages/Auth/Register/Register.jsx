@@ -2,10 +2,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import axios from "axios";
 
 const Register = () => {
+  const Navigate = useNavigate();
+  const location = useLocation();
+  console.log("in register page ", location);
   //React hook from work step-1
   const {
     register,
@@ -13,21 +17,52 @@ const Register = () => {
     handleSubmit,
   } = useForm();
 
-  const { registerUser } = useAuth();
+  const { registerUser, updateUserProfile } = useAuth();
 
   //handle reach-hook-from
   const handleRegistration = (data) => {
-    console.log(data);
+    console.log(data.photo[0]);
+    const profileImg = data.photo[0];
     //firebase signUp work
     registerUser(data.email, data.password)
       .then((result) => {
-        toast("SinUp Successful");
+        toast.success("SinUp Successful");
         console.log(result);
+        //1.store the image in form data
+        const formData = new FormData();
+        formData.append("image", profileImg);
+        //2. send the photo to store and get ther url
+        //imagebbb example call
+        const imageAPI_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
+        //send image image bbb and store and convert
+        axios.post(imageAPI_URL, formData).then((result) => {
+          console.log("after image upload", result.data.data);
+          // ====update user profile to firebase======
+          const userProfile = {
+            displayName: data.name,
+            display_url: result.data.data.display_url,
+          };
+
+          //update profile
+          updateUserProfile(userProfile)
+            .then(() => {
+              console.log("user profile updated complete");
+              toast.success("Profile updated done");
+              Navigate(location.state || "/");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
       })
       .catch((error) => {
         console.log(error);
+        if (error.code === "auth/email-already-in-use") {
+          toast("email-already-in-use");
+        }
       });
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
       <div className="card w-full max-w-sm shrink-0 shadow-2xl bg-base-100 border border-base-300">
@@ -35,6 +70,31 @@ const Register = () => {
         <form onSubmit={handleSubmit(handleRegistration)} className="card-body">
           <h2 className="text-2xl font-bold text-center mb-4">Welcome to Zap Shift!</h2>
           <h1 className="text-2xl text-center -mt-3">Please Register</h1>
+          {/* Name Flied */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Your Name</span>
+            </label>
+            <input
+              type="text"
+              {...register("name", { required: true })}
+              placeholder="Enter your name"
+              className="input input-bordered focus:input-primary transition-all"
+            />
+            {errors.email?.type === "required" && <p className="text-red-500">Name is required.</p>}
+          </div>
+          {/* DaisyUi File Input photo */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Your Name</span>
+            </label>
+            <input type="file" {...register("photo", { required: true })} className="file-input" />
+
+            {errors.photo?.type === "required" && (
+              <p className="text-red-500">Photo is required.</p>
+            )}
+          </div>
+
           {/* Email Field */}
           <div className="form-control">
             <label className="label">
@@ -100,7 +160,11 @@ const Register = () => {
 
           <p className="text-center text-sm mt-4">
             Already have an account
-            <Link to="/login" className="link link-primary ml-1 font-semibold">
+            <Link
+              state={location.state}
+              to="/login"
+              className="link link-primary ml-1 font-semibold"
+            >
               Login
             </Link>
           </p>

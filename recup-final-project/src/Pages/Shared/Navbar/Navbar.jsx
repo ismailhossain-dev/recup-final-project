@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../../../components/Logo/Logo";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "react-toastify";
 
@@ -96,9 +96,12 @@ const Navbar = () => {
         )}
 
         {/* Be a Rider button  */}
-        <button className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-black mx-4">
+        <Link
+          to="/rider"
+          className="btn btn-primary btn-sm md:btn-md shadow-lg shadow-primary/20 capitalize text-black mx-4"
+        >
           Be a Rider
-        </button>
+        </Link>
       </div>
     </div>
   );
