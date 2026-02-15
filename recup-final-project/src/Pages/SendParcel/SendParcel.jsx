@@ -6,6 +6,7 @@ const SendParcel = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -19,8 +20,20 @@ const SendParcel = () => {
   //  ========= Duplicate regions of the new set were used.===========
   //spreed operate use then convert array data
   const singleRegion = [...new Set(duplicateRegions)];
-  console.log(singleRegion);
+  // console.log(singleRegion);
 
+  //watch or useWatch for auto set district
+  const senderRegions = watch("senderRegion");
+
+  //taking district from serviceCenters
+  const districtsByRegion = (region) => {
+    //filter mardome amra region gola nitechi
+    const regionDistricts = serviceCenters.filter((c) => c.region === region);
+    const districts = regionDistricts.map((d) => d.district);
+    return districts;
+  };
+
+  //
   const handleParcelFrom = (data) => {
     console.log(data);
   };
@@ -141,22 +154,35 @@ const SendParcel = () => {
             {/* Sender region */}
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Sender Regions</legend>
-              <select defaultValue="Pick a browser" className="select">
-                <option disabled={true}>Pick a Region</option>
+              <select {...register("senderRegion")} defaultValue="" className="select">
+                {/* Default disabled option */}
+                <option value="" disabled>
+                  Pick a Region
+                </option>
                 {singleRegion.map((r, index) => (
                   <option key={index}>{r}</option>
                 ))}
-                <option>Chrome</option>
               </select>
             </fieldset>
             {/* sender district */}
             <fieldset className="fieldset">
               <legend className="fieldset-legend">District</legend>
-              <select defaultValue="Pick a browser" className="select">
-                <option disabled={true}>Pick a District</option>
-                <option>Chrome</option>
-                <option>FireFox</option>
-                <option>Safari</option>
+              <select
+                {...register("senderDistrict")}
+                defaultValue="" // default value এখন খালি
+                className="select"
+              >
+                {/* Default disabled option */}
+                <option value="" disabled>
+                  Pick a district
+                </option>
+
+                {/* Map districts */}
+                {districtsByRegion(senderRegions).map((d, index) => (
+                  <option key={index} value={d}>
+                    {d}
+                  </option>
+                ))}
               </select>
             </fieldset>
 
