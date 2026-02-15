@@ -19,7 +19,11 @@ const Navbar = () => {
   };
   // একটি কমন ক্লাস ফাংশন যাতে একটিভ লিংক বুঝা যায়
   const navLinkStyles = ({ isActive }) =>
-    `  mr-2 active:bg-transparent! hover:bg-transparent! p-0 ${isActive ? "border-b-2 border-blue-500  text-primary " : ""}`;
+    `px-5 py-2 rounded-full transition-all duration-300 font-medium text-sm tracking-wide
+  hover:bg-primary/10 hover:text-primary active:scale-95
+  ${
+    isActive ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-gray-600 bg-transparent"
+  }`;
 
   const links = (
     <>
@@ -28,15 +32,15 @@ const Navbar = () => {
           Service
         </NavLink>
       </li>
-      <li>
-        <NavLink to="/about-us" className={navLinkStyles}>
-          About Us
-        </NavLink>
-      </li>
 
       <li>
         <NavLink to="/coverage" className={navLinkStyles}>
           Coverage
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/send-parcel" className={navLinkStyles}>
+          Send Parcel
         </NavLink>
       </li>
     </>
